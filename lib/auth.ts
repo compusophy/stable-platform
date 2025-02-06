@@ -16,7 +16,7 @@ export const authOptions: NextAuthOptions = {
           id: profile.id.toString(),
           name: profile.name || profile.login,
           gh_username: profile.login,
-          email: profile.email,
+          email: "no@no-email.com",
           image: profile.avatar_url,
         };
       },
@@ -26,6 +26,7 @@ export const authOptions: NextAuthOptions = {
     signIn: `/login`,
     verifyRequest: `/login`,
     error: "/login", // Error code passed in query string as ?error=
+    newUser: '/new-user'
   },
   adapter: DrizzleAdapter(db, {
     usersTable: users,
@@ -50,6 +51,11 @@ export const authOptions: NextAuthOptions = {
     },
   },
   callbacks: {
+    redirect({ url, baseUrl }) {
+      if (url.startsWith("/")) return `${baseUrl}${url}`
+      else if (new URL(url).origin === baseUrl) return url
+      return baseUrl
+    },
     jwt: async ({ token, user }) => {
       if (user) {
         token.user = user;

@@ -21,7 +21,6 @@ export default async function middleware(req: NextRequest) {
   let hostname = req.headers
     .get("host")!
     .replace(".localhost:3000", `.${process.env.NEXT_PUBLIC_ROOT_DOMAIN}`);
-
   // special case for Vercel preview deployment URLs
   if (
     hostname.includes("---") &&
@@ -60,11 +59,12 @@ export default async function middleware(req: NextRequest) {
 
   // rewrite root application to `/home` folder
   if (
-    hostname === "localhost:3000" ||
+    hostname === "www.compusophy.com" || 
+    hostname === "compusophy.com" ||
     hostname === process.env.NEXT_PUBLIC_ROOT_DOMAIN
   ) {
     return NextResponse.rewrite(
-      new URL(`/home${path === "/" ? "" : path}`, req.url),
+      new URL(`/home${path === "/" ? "" : path}`, req.url)
     );
   }
 
